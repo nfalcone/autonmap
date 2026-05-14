@@ -13,7 +13,6 @@ Scheduled nmap scanning with a human-readable web dashboard. Runs in Docker on A
 
 1. Clone this repo
 2. Edit `docker-compose.yml` — set `NMAP_TARGETS` to your network(s)
-3. Replace `YOUR_GITHUB_USERNAME` in the image name with your actual GitHub username
 
 ```bash
 docker compose pull
@@ -74,17 +73,6 @@ Push a change to `main` → GitHub Actions builds a new image → pull it on you
 
 ```bash
 docker compose pull && docker compose up -d
-```
-
-Or set up Watchtower to auto-pull:
-
-```yaml
-services:
-  watchtower:
-    image: containrrr/watchtower
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-    command: --interval 300 autonmap   # check every 5 minutes
 ```
 
 ## Viewing logs
