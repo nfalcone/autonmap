@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  autonmap:
+    image: ghcr.io/nfalcone/autonmap:latest
+    container_name: autonmap
+    restart: unless-stopped
+
+    # nmap needs raw packet capabilities for OS detection, SYN scans, etc.
+    # If you're only doing ping sweeps (-sn), you can remove these.
+    cap_add:
+      - NET_RAW
+      - NET_ADMIN
+
+    # Optional: host networking gives nmap the best visibility
+    # Uncomment if you have subnet routing issues:
+    # network_mode: host
+
+    ports:
+      - "8080:80"
+
+    volumes:
+      - autonmap_data:/data
+
+    environment:
+      # Space-separated list of targets (CIDRs, IPs, ranges, hostnames)
+      - NMAP_TARGETS=192.168.1.0/24
+
+      # nmap flags — default is ping sweep only (-sn)
+      # For service detection add: -sV --open
+      # For OS detection add: -O (requires NET_RAW cap)
+      # Example: -sV -O --open -T4
+      - NMAP_FLAGS=-sn
+
+      # Cron schedule (default: top of every hour)
+      - SCAN_CRON=0 * * * *
+
+      # Run a scan immediately on container start (true/false)
+      - SCAN_ON_START=true
+
+      - TZ=America/New_York
+
+volumes:
+  autonmap_data:
